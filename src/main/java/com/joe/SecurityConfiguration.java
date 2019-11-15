@@ -1,5 +1,8 @@
 package com.joe;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.sql.DataSource;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,6 +14,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
@@ -89,9 +93,13 @@ public class SecurityConfiguration {
 	@Order(1)
 	protected static class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
+		@Autowired
+		DataSource dataSource;
+		
 		@Override
-		protected void configure(final AuthenticationManagerBuilder auth) throws Exception {
-			auth.inMemoryAuthentication().withUser("john").password("{noop}123").roles("User");
+		protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+//			auth.inMemoryAuthentication().withUser("john").password("{noop}123").roles("User");
+			auth.jdbcAuthentication().dataSource(dataSource).passwordEncoder(new BCryptPasswordEncoder());
 		}
 
 		@Override
@@ -109,5 +117,6 @@ public class SecurityConfiguration {
 					.permitAll();
 
 		}
+		
 	}
 }
