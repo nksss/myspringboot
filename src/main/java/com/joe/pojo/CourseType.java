@@ -25,7 +25,7 @@ public class CourseType {
 	@Column(name = "name")
 	private String name;
 	@Column(name = "school_id")
-	private int school_id;
+	private int schoolId;
 	@Column(name = "created_at")
 	private String created_at;
 	@Column(name = "updated_at")
@@ -68,12 +68,12 @@ public class CourseType {
 		this.name = name;
 	}
 
-	public int getschool_id() {
-		return school_id;
+	public int getSchoolId() {
+		return schoolId;
 	}
 
-	public void setschool_id(int school_id) {
-		this.school_id = school_id;
+	public void setSchoolId(int schoolId) {
+		this.schoolId = schoolId;
 	}
 
 	public String getcreated_at() {
