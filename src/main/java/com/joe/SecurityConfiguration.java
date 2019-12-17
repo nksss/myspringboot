@@ -1,6 +1,5 @@
 package com.joe;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -23,7 +23,7 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.R
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer;
-import org.springframework.security.oauth2.provider.token.store.InMemoryTokenStore;
+import org.springframework.security.oauth2.provider.token.store.redis.RedisTokenStore;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -66,6 +66,12 @@ public class SecurityConfiguration {
 
 	@Configuration
 	protected static class AuthorizationServerConfiguration extends AuthorizationServerConfigurerAdapter {
+		
+		@Autowired
+		DataSource dataSource;
+		
+		@Autowired
+		RedisConnectionFactory connectionFactory;
 
 		@Autowired
 		private AuthenticationManager authenticationManager;
@@ -77,14 +83,15 @@ public class SecurityConfiguration {
 
 		@Override
 		public void configure(final ClientDetailsServiceConfigurer clients) throws Exception {
-			clients.inMemory().withClient("ABC").secret("{noop}sec1").autoApprove(true)
-					.authorizedGrantTypes("authorization_code", "client_credentials", "password", "refresh_token")
-					.scopes("read", "write").redirectUris("http://google.com");
+			clients.jdbc(dataSource);
+//			clients.inMemory().withClient("ABC").secret("{noop}sec1").autoApprove(true)
+//					.authorizedGrantTypes("authorization_code", "client_credentials", "password", "refresh_token")
+//					.scopes("read", "write").redirectUris("http://google.com");
 		}
 
 		@Override
 		public void configure(final AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
-			endpoints.tokenStore(new InMemoryTokenStore()).authenticationManager(authenticationManager);
+			endpoints.tokenStore(new RedisTokenStore(connectionFactory)).authenticationManager(authenticationManager);
 		}
 
 	}
