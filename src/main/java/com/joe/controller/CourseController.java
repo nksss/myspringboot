@@ -2,6 +2,7 @@ package com.joe.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -9,11 +10,12 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.joe.dao.CourseTypeDao;
+import com.joe.mapper.CourseTypeMapper;
 import com.joe.pojo.CourseType;
 import com.joe.request.CourseTypeForm;
 
@@ -21,7 +23,7 @@ import com.joe.request.CourseTypeForm;
 public class CourseController {
 
 	@Autowired
-	CourseTypeDao courseTypeDao;
+	CourseTypeMapper courseTypeMapper;
 //	@Autowired
 //	CoursesMapper coursesMapper;
 
@@ -35,21 +37,21 @@ public class CourseController {
 	@GetMapping("api/courses_type")
 	public List<CourseType> list(Model m, @RequestParam(value = "page", defaultValue = "0") int page,
 			@RequestParam(value = "pageSize", defaultValue = "1") int pageSize) throws Exception {
-		List<CourseType> result = courseTypeDao.findAll();
-		return result;
+//		List<CourseType> result = courseTypeMapper;
+		return null;
 	}
 
 	@PostMapping("api/courses_type")
 	public List createCourseType(@Validated CourseTypeForm form, BindingResult result) {
-		if (!result.hasErrors()) {
-			CourseType courseType = new CourseType();
-			courseType.setName(form.getName());
-			courseType.setSchoolId(form.getSchoolId());
-			courseTypeDao.save(courseType);
-			List finalR = new ArrayList();
-			return finalR;
-		}
-		return result.getAllErrors();
+//		if (!result.hasErrors()) {
+//			CourseType courseType = new CourseType();
+//			courseType.setName(form.getName());
+//			courseType.setSchoolId(form.getSchoolId());
+//			courseTypeDao.save(courseType);
+//			List finalR = new ArrayList();
+//			return finalR;
+//		}
+		return null;
 	}
 
 	@Autowired
@@ -60,10 +62,10 @@ public class CourseController {
 		template.convertAndSend("chat", "hello");
 	}
 
-//	@GetMapping("/courses/{id}")
-//	public Courses findCourse(@PathVariable int id) throws Exception {
-//		Courses result = coursesMapper.find(id);
-//		return result;
-//	}
+	@GetMapping("api/courses_type/{id}")
+	public CourseType findCourse(@PathVariable("id") int id) throws Exception {
+//		CourseType result = courseTypeDao.getOne(id);
+		return null;
+	}
 
 }

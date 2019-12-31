@@ -1,10 +1,15 @@
 package com.joe.pojo;
 
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -17,14 +22,36 @@ public class Users {
 	private int id;
 	@Column(name = "password")
 	private String password;
-	@Column(name = "name")
-	private String name;
+	@Column(name = "username")
+	private String username;
 	@Column(name = "deleted_at")
 	private String deleted_at;
 	@Column(name = "created_at")
 	private String created_at;
 	@Column(name = "updated_at")
 	private String updated_at;
+	@Column(name = "enabled")
+	private String enabled;
+	
+	public String getEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(String enabled) {
+		this.enabled = enabled;
+	}
+
+	public List<Roles> getRoles() {
+		return roles;
+	}
+
+	public void setRoles(List<Roles> roles) {
+		this.roles = roles;
+	}
+
+	@ManyToMany
+	@JoinTable(name="user_role",joinColumns= {@JoinColumn(name="user_id")},inverseJoinColumns= {@JoinColumn(name="role_id")})
+	private List<Roles> roles;
 
 	public int getId() {
 		return id;
@@ -42,12 +69,12 @@ public class Users {
 		this.password = password;
 	}
 
-	public String getName() {
-		return name;
+	public String getUsername() {
+		return username;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setUsername(String username) {
+		this.username = username;
 	}
 
 	public String getDeleted_at() {

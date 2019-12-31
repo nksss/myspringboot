@@ -5,9 +5,12 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController
+//@RestController
+@Controller
 public class LoginController {
 	
 //	@Autowired
@@ -16,6 +19,10 @@ public class LoginController {
 	@Autowired
 	private SimpMessagingTemplate template;
 
+	@RequestMapping("/login")
+    public String login(){
+        return "login";
+    }
 //	@PostMapping("login")
 //	public String login(@RequestParam(value = "name") String name, @RequestParam(value = "password", defaultValue = "0") String password, HttpServletRequest request) throws Exception {
 //		String phone = request.getParameter("phone;
