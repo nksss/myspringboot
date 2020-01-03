@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.joe.jooq.tables.pojos.CoursesType;
 import com.joe.mapper.CourseTypeMapper;
-import com.joe.pojo.CourseType;
 import com.joe.request.CourseTypeForm;
 
 @RestController
@@ -35,14 +35,14 @@ public class CourseController {
 //	}
 
 	@GetMapping("api/courses_type")
-	public List<CourseType> list(Model m, @RequestParam(value = "page", defaultValue = "0") int page,
+	public List<CoursesType> list(Model m, @RequestParam(value = "page", defaultValue = "1") int page,
 			@RequestParam(value = "pageSize", defaultValue = "1") int pageSize) throws Exception {
-//		List<CourseType> result = courseTypeMapper;
-		return null;
+		List<CoursesType> result = courseTypeMapper.searchCourseType(page, pageSize);
+		return result;
 	}
 
-	@PostMapping("api/courses_type")
-	public List createCourseType(@Validated CourseTypeForm form, BindingResult result) {
+//	@PostMapping("api/courses_type")
+//	public List createCourseType(@Validated CourseTypeForm form, BindingResult result) {
 //		if (!result.hasErrors()) {
 //			CourseType courseType = new CourseType();
 //			courseType.setName(form.getName());
@@ -51,21 +51,21 @@ public class CourseController {
 //			List finalR = new ArrayList();
 //			return finalR;
 //		}
-		return null;
-	}
+//		return null;
+//	}
 
-	@Autowired
-	StringRedisTemplate template;
+//	@Autowired
+//	StringRedisTemplate template;
 
-	@GetMapping("api/test")
-	public void test() {
-		template.convertAndSend("chat", "hello");
-	}
+//	@GetMapping("api/test")
+//	public void test() {
+//		template.convertAndSend("chat", "hello");
+//	}
 
-	@GetMapping("api/courses_type/{id}")
-	public CourseType findCourse(@PathVariable("id") int id) throws Exception {
+//	@GetMapping("api/courses_type/{id}")
+//	public CoursesType findCourse(@PathVariable("id") int id) throws Exception {
 //		CourseType result = courseTypeDao.getOne(id);
-		return null;
-	}
+//		return null;
+//	}
 
 }
