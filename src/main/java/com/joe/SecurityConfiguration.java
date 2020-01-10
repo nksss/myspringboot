@@ -78,11 +78,19 @@ public class SecurityConfiguration {
 		@Autowired
 		DataSource dataSource;
 		
+//		@Autowired
+//		MyCustomUserService myCustomUserService;
+		
 		@Autowired
 		RedisConnectionFactory connectionFactory;
 
 		@Autowired
 		private AuthenticationManager authenticationManager;
+		
+		@Bean
+		UserDetailsService oauthCustomUserService(){ //注册UserDetailsService 的bean
+	        return new MyCustomUserService();
+	    }
 
 		@Override
 		public void configure(final AuthorizationServerSecurityConfigurer security) throws Exception {
@@ -93,10 +101,12 @@ public class SecurityConfiguration {
 		public void configure(final ClientDetailsServiceConfigurer clients) throws Exception {
 			clients.jdbc(dataSource);
 		}
+		
+		
 
 		@Override
 		public void configure(final AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
-			endpoints.tokenStore(new RedisTokenStore(connectionFactory)).authenticationManager(authenticationManager);
+			endpoints.tokenStore(new RedisTokenStore(connectionFactory)).authenticationManager(authenticationManager).userDetailsService(oauthCustomUserService());
 		}
 
 	}

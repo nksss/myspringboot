@@ -1,5 +1,6 @@
 package com.joe.controller;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.jooq.DSLContext;
@@ -8,11 +9,12 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.joe.jooq.tables.pojos.Users;
@@ -30,15 +32,20 @@ public class UserController {
 	@Autowired
 	private SimpMessagingTemplate template;
 	
-//	@PostMapping("logout")
-//	public boolean logout(HttpServletRequest request) {
-//		HttpSession session = request.getSession();
-//		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//		ServletContext application = session.getServletContext();
-//		HashSet sessions = (HashSet) application.getAttribute("sessions");
-//		return sessions.remove(session);
-//		return session.getId();
-//	}
+	
+	@GetMapping("api/get_info")
+	public Map<String, String> userInfo() {
+		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		
+		Map<String, String> result = new HashMap();
+		if (principal instanceof UserDetails) {
+			result.put("name", ((UserDetails)principal).getUsername());
+		} else {
+			result.put("name", principal.toString());
+		}
+		
+		return result;
+	}
 	
 	@PostMapping("register")
 	public int register(@RequestBody Map<String, String> request) {
